@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "MMCard",
+    "slug": "mmcard",
+    "scheme": "mmcard",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#070810",
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NFCReaderUsageDescription": "NFC kartvizitinize bağlantınızı yazmak için NFC erişimi gereklidir."
+      },
+      "entitlements": {
+        "com.apple.developer.nfc.readersession.formats": ["NDEF", "TAG"]
+      }
+    },
+    "android": {
+      "package": "com.mmcard.app",
+      "permissions": ["android.permission.NFC"],
+      "adaptiveIcon": {
+        "backgroundColor": "#070810",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "react-native-nfc-manager",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#070810",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "dark": {
+            "backgroundColor": "#070810",
+            "image": "./assets/splash-icon.png"
+          }
+        }
+      ],
+      "expo-secure-store",
+      "expo-font"
+    ]
+  }
+}
