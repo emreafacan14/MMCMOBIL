@@ -1,7 +1,7 @@
 import { Nfc, Sparkles } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import { CardShell } from "@/components/ui/CardShell";
+import { CardShell } from "./CardShell";
 import { colors, glowShadow, radius } from "@/constants/theme";
 
 export interface CardVisualProps {

@@ -5,10 +5,12 @@ import type { ListRenderItemInfo } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { EmptyState } from "@/components/ui/EmptyState";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  EmptyState,
+  GlassCard,
+  ListItemSkeleton,
+  ScreenHeader,
+} from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { userSocialMediaHooks } from "@/hooks/queries/contactInfoQueries";
 import { useHaptic } from "@/hooks/useHaptic";
@@ -114,10 +116,8 @@ export default function SocialMediasScreen() {
 
     if (listQuery.isLoading) {
       return (
-        <View className="gap-y-3 px-5 pt-2">
-          <Skeleton className="h-[72px] rounded-2xl" />
-          <Skeleton className="h-[72px] rounded-2xl" />
-          <Skeleton className="h-[72px] rounded-2xl" />
+        <View className="px-5 pt-2">
+          <ListItemSkeleton count={4} />
         </View>
       );
     }

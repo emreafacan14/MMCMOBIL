@@ -18,9 +18,7 @@ import { View } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { I18nProvider } from "@/i18n";
-import { ToastHost } from "@/components/ui/ToastHost";
-import { ConfirmHost } from "@/components/ui/ConfirmHost";
-import { PremiumBackdrop } from "@/components/ui/PremiumBackdrop";
+import { ConfirmHost, PremiumBackdrop, ToastHost } from "@/components/ui";
 import { useAuthStore } from "@/store/authStore";
 import { colors } from "@/constants/theme";
 

@@ -12,9 +12,11 @@ import {
 } from "react-native-keyboard-controller";
 import { BadgeCheck, CheckCircle2 } from "lucide-react-native";
 import { useTranslation } from "@/i18n";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { KeyboardActionBar } from "@/components/ui/KeyboardActionBar";
+import {
+  KeyboardActionBar,
+  PremiumButton,
+  ScreenHeader,
+} from "@/components/ui";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useActivateCard } from "@/hooks/queries/cardQueries";
 import {

@@ -1,8 +1,8 @@
 import type { ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
+import { GlassCard } from "./GlassCard";
+import { PremiumButton } from "./PremiumButton";
 import { useTranslation } from "@/i18n";
 import { useConfirmStore } from "@/store/confirmStore";
 

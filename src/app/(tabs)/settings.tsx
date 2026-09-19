@@ -10,10 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 
-import { Avatar } from "@/components/ui/Avatar";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { Avatar, GlassCard, ScreenHeader, Skeleton } from "@/components/ui";
 import { appVersion, colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useLogout } from "@/hooks/queries/authQueries";

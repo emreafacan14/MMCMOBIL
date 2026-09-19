@@ -1,5 +1,6 @@
 import type { PickedFile, SaveUserDocumentRequest, UserDocument } from "@/types/api";
-import { apiClient, appendFilePart, MULTIPART_CONFIG, unwrap } from "@/services/client";
+import { apiClient, appendFilePart, handleApiResponse, MULTIPART_CONFIG } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 import { useAuthStore } from "@/store/authStore";
 
 /**
@@ -8,12 +9,14 @@ import { useAuthStore } from "@/store/authStore";
  */
 export const userDocumentsService = {
   list(): Promise<UserDocument[]> {
-    return unwrap((client) => client.get<UserDocument[]>("/api/my-documents"));
+    return handleApiResponse((client) =>
+      client.get<UserDocument[]>(API_ENDPOINTS.MY_DOCUMENTS.BASE),
+    );
   },
 
   getById(id: number): Promise<UserDocument> {
-    return unwrap((client) =>
-      client.get<UserDocument>(`/api/my-documents/${id}`),
+    return handleApiResponse((client) =>
+      client.get<UserDocument>(API_ENDPOINTS.MY_DOCUMENTS.BY_ID(id)),
     );
   },
 
@@ -26,20 +29,31 @@ export const userDocumentsService = {
       appendFilePart(formData, "file", request.file);
     }
 
-    return unwrap((client) =>
+    return handleApiResponse((client) =>
       id === null
-        ? client.post<UserDocument>("/api/my-documents", formData, MULTIPART_CONFIG)
-        : client.put<UserDocument>(`/api/my-documents/${id}`, formData, MULTIPART_CONFIG),
+        ? client.post<UserDocument>(
+            API_ENDPOINTS.MY_DOCUMENTS.BASE,
+            formData,
+            MULTIPART_CONFIG,
+          )
+        : client.put<UserDocument>(
+            API_ENDPOINTS.MY_DOCUMENTS.BY_ID(id),
+            formData,
+            MULTIPART_CONFIG,
+          ),
     );
   },
 
   remove(id: number): Promise<boolean> {
-    return unwrap((client) => client.delete<boolean>(`/api/my-documents/${id}`));
+    return handleApiResponse((client) =>
+      client.delete<boolean>(API_ENDPOINTS.MY_DOCUMENTS.BY_ID(id)),
+    );
   },
 
   /** Direct file endpoint URL — requires the Authorization header. */
   buildFileUrl(id: number): string {
-    return `${apiClient.defaults.baseURL}/api/my-documents/${id}/file`;
+    const baseUrl = apiClient.defaults.baseURL || "";
+    return `${baseUrl}${API_ENDPOINTS.MY_DOCUMENTS.FILE(id)}`;
   },
 
   /** Bearer token for authenticated downloadAsync calls. */

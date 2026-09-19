@@ -4,15 +4,20 @@ import type {
   UpdateMyProfileRequest,
   UpdateMyProfileResponse,
 } from "@/types/api";
-import { appendFilePart, MULTIPART_CONFIG, unwrap } from "@/services/client";
+import { appendFilePart, handleApiResponse, MULTIPART_CONFIG } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const profileService = {
   getMyProfile(): Promise<MyProfile> {
-    return unwrap((client) => client.get<MyProfile>("/api/my-profile"));
+    return handleApiResponse((client) =>
+      client.get<MyProfile>(API_ENDPOINTS.MY_PROFILE.BASE),
+    );
   },
 
   updateMyProfile(request: UpdateMyProfileRequest): Promise<UpdateMyProfileResponse> {
-    return unwrap((client) => client.put<UpdateMyProfileResponse>("/api/my-profile", request));
+    return handleApiResponse((client) =>
+      client.put<UpdateMyProfileResponse>(API_ENDPOINTS.MY_PROFILE.BASE, request),
+    );
   },
 
   /** Multipart `file` upload; the endpoint answers a plain bool on success. */
@@ -20,8 +25,12 @@ export const profileService = {
     const formData = new FormData();
     appendFilePart(formData, "file", file);
 
-    return unwrap((client) =>
-      client.put<boolean>("/api/my-profile/profile-image", formData, MULTIPART_CONFIG),
+    return handleApiResponse((client) =>
+      client.put<boolean>(
+        API_ENDPOINTS.MY_PROFILE.PROFILE_IMAGE,
+        formData,
+        MULTIPART_CONFIG,
+      ),
     );
   },
 };

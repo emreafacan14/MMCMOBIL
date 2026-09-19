@@ -5,10 +5,12 @@ import { router } from "expo-router";
 import { CircleAlert, Eye, EyeOff, Lock, Mail, User } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { TextField } from "@/components/ui/TextField";
-import { AuthHero } from "@/components/ui/AuthHero";
+import {
+  AuthHero,
+  GlassCard,
+  PremiumButton,
+  TextField,
+} from "@/components/ui";
 import { useTranslation } from "@/i18n";
 import { toast } from "@/store/toastStore";
 import { useRegister } from "@/hooks/queries/authQueries";

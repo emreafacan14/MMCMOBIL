@@ -19,15 +19,19 @@ import {
   Zap,
 } from "lucide-react-native";
 
-import { Avatar } from "@/components/ui/Avatar";
-import { CardVisual, CARD_ASPECT_RATIO } from "@/components/ui/CardVisual";
-import { ContactRow } from "@/components/ui/ContactRow";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { FlipCard } from "@/components/ui/FlipCard";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { QrCardFace } from "@/components/ui/QrCardFace";
-import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  Avatar,
+  CardVisual,
+  CARD_ASPECT_RATIO,
+  CardVisualSkeleton,
+  ContactRow,
+  EmptyState,
+  FlipCard,
+  GlassCard,
+  PremiumButton,
+  QrCardFace,
+  Skeleton,
+} from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useMyCards } from "@/hooks/queries/cardQueries";
@@ -158,35 +162,45 @@ export default function HomeScreen() {
       >
         {/* Top Header: User Profile Avatar & Greeting */}
         <View className="flex-row items-center justify-between py-2">
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => {
-              haptic("light");
-              router.push("/account");
-            }}
-            className="flex-row items-center gap-3 active:opacity-75 flex-1 pr-2"
-          >
-            <Avatar
-              imagePath={profileImagePath}
-              name={givenName}
-              surname={familyName}
-              size={48}
-            />
-            <View className="flex-1">
-              <View className="flex-row items-center gap-1.5">
-                <Text className="font-inter-bold text-[10px] uppercase tracking-[2px] text-primary-strong">
-                  {t("home.digitalId")}
-                </Text>
-                <View className="h-1.5 w-1.5 rounded-full bg-success" />
+          {profileQuery.isLoading && !sessionUser?.name ? (
+            <View className="flex-1 flex-row items-center gap-3 pr-2">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <View className="flex-1 gap-1.5">
+                <Skeleton className="h-3 w-20 rounded" />
+                <Skeleton className="h-5 w-36 rounded" />
               </View>
-              <Text
-                numberOfLines={1}
-                className="text-xl font-inter-extrabold tracking-tight text-ink"
-              >
-                {t("home.greeting", { name: givenName.length > 0 ? givenName : sessionUser?.name ?? "" })}
-              </Text>
             </View>
-          </Pressable>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => {
+                haptic("light");
+                router.push("/account");
+              }}
+              className="flex-1 flex-row items-center gap-3 pr-2 active:opacity-75"
+            >
+              <Avatar
+                imagePath={profileImagePath}
+                name={givenName}
+                surname={familyName}
+                size={48}
+              />
+              <View className="flex-1">
+                <View className="flex-row items-center gap-1.5">
+                  <Text className="font-inter-bold text-[10px] uppercase tracking-[2px] text-primary-strong">
+                    {t("home.digitalId")}
+                  </Text>
+                  <View className="h-1.5 w-1.5 rounded-full bg-success" />
+                </View>
+                <Text
+                  numberOfLines={1}
+                  className="text-xl font-inter-extrabold tracking-tight text-ink"
+                >
+                  {t("home.greeting", { name: givenName.length > 0 ? givenName : sessionUser?.name ?? "" })}
+                </Text>
+              </View>
+            </Pressable>
+          )}
 
           {primaryCard && (
             <Pressable
@@ -210,7 +224,7 @@ export default function HomeScreen() {
         {/* Hero Card Visual Section */}
         {cardsQuery.isLoading ? (
           <View className="mt-4 gap-3">
-            <Skeleton className="h-52 rounded-3xl" />
+            <CardVisualSkeleton />
             <Skeleton className="h-16 rounded-2xl" />
           </View>
         ) : cards.length === 0 ? (
@@ -338,7 +352,18 @@ export default function HomeScreen() {
 
 
         {/* Other Cards Section (If User Has Multiple Cards) */}
-        {otherCards.length > 0 && (
+        {cardsQuery.isLoading ? (
+          <View className="mt-6">
+            <View className="mb-3 flex-row items-center justify-between">
+              <Skeleton className="h-4 w-28 rounded" />
+              <Skeleton className="h-3 w-16 rounded" />
+            </View>
+            <View className="flex-row gap-3">
+              <Skeleton className="h-14 flex-1 rounded-2xl" />
+              <Skeleton className="h-14 flex-1 rounded-2xl" />
+            </View>
+          </View>
+        ) : otherCards.length > 0 ? (
           <View className="mt-6">
             <View className="mb-3 flex-row items-center justify-between">
               <Text className="text-[16px] font-inter-bold tracking-tight text-ink">
@@ -368,7 +393,7 @@ export default function HomeScreen() {
               )}
             />
           </View>
-        )}
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

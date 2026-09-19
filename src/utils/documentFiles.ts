@@ -6,7 +6,7 @@
 
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system/legacy";
-import { apiClient } from "@/services/client";
+import { apiClient, publicApiClient } from "@/services/client";
 import { userDocumentsService } from "@/services/userDocumentsService";
 import type { CardDocument } from "@/types/api";
 
@@ -64,8 +64,9 @@ export async function sharePublicCardDocument(
   }
 
   const fileUri = `${FileSystem.cacheDirectory}card-${document.id}`;
+  const baseUrl = publicApiClient.defaults.baseURL || apiClient.defaults.baseURL || "";
   const downloadResult = await FileSystem.downloadAsync(
-    `${apiClient.defaults.baseURL}${document.documentUrl}`,
+    `${baseUrl}${document.documentUrl}`,
     fileUri,
   );
 

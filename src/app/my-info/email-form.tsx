@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { TextField } from "@/components/ui/TextField";
+import { FormFieldsSkeleton, TextField } from "@/components/ui";
 import { userEmailHooks } from "@/hooks/queries/contactInfoQueries";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useTranslation } from "@/i18n";
@@ -111,6 +111,19 @@ export default function EmailFormScreen() {
       toast.error(toApiError(error).message);
     }
   };
+
+  if (editingId !== null && listQuery.isLoading) {
+    return (
+      <ContactFormShell
+        title={t("myInfo.emails.formEditTitle")}
+        saveLabel={t("common.save")}
+        isSaving={false}
+        onSubmit={() => {}}
+      >
+        <FormFieldsSkeleton count={4} />
+      </ContactFormShell>
+    );
+  }
 
   if (editingId !== null && !listQuery.isSuccess) {
     return null; // Wait for the cached list before deciding prefill vs. back.

@@ -8,7 +8,8 @@ import type {
   UserPhone,
   UserSocialMedia,
 } from "@/types/api";
-import { unwrap } from "@/services/client";
+import { handleApiResponse } from "@/services/client";
+import { API_CONTROLLERS } from "@/constants/apiEndpoints";
 
 /**
  * Phone, e-mail and social-media resources share one shape:
@@ -19,68 +20,66 @@ import { unwrap } from "@/services/client";
  * DELETE /api/my-{resource}/{id}
  * Addresses do not expose GET-by-id in the backend and are defined separately.
  */
-function createContactInfoApi<TItem, TSave>(resource: string) {
-  const basePath = `/api/my-${resource}`;
-
+function createContactInfoApi<TItem, TSave>(basePath: string) {
   return {
     list(): Promise<TItem[]> {
-      return unwrap((client) => client.get<TItem[]>(basePath));
+      return handleApiResponse((client) => client.get<TItem[]>(basePath));
     },
 
     getById(id: number): Promise<TItem> {
-      return unwrap((client) => client.get<TItem>(`${basePath}/${id}`));
+      return handleApiResponse((client) => client.get<TItem>(`${basePath}/${id}`));
     },
 
     create(request: TSave): Promise<TItem> {
-      return unwrap((client) => client.post<TItem>(basePath, request));
+      return handleApiResponse((client) => client.post<TItem>(basePath, request));
     },
 
     update(id: number, request: TSave): Promise<TItem> {
-      return unwrap((client) =>
+      return handleApiResponse((client) =>
         client.put<TItem>(`${basePath}/${id}`, request),
       );
     },
 
     remove(id: number): Promise<boolean> {
-      return unwrap((client) => client.delete<boolean>(`${basePath}/${id}`));
+      return handleApiResponse((client) => client.delete<boolean>(`${basePath}/${id}`));
     },
   };
 }
 
 export const userPhoneApi = createContactInfoApi<UserPhone, SaveUserPhoneRequest>(
-  "phones",
+  API_CONTROLLERS.MY_PHONES,
 );
 
 export const userEmailApi = createContactInfoApi<UserEmail, SaveUserEmailRequest>(
-  "emails",
+  API_CONTROLLERS.MY_EMAILS,
 );
 
 export const userAddressApi =
   (() => {
-    const basePath = "/api/my-addresses";
+    const basePath = API_CONTROLLERS.MY_ADDRESSES;
 
     return {
       list(): Promise<UserAddress[]> {
-        return unwrap((client) => client.get<UserAddress[]>(basePath));
+        return handleApiResponse((client) => client.get<UserAddress[]>(basePath));
       },
 
       create(request: SaveUserAddressRequest): Promise<UserAddress> {
-        return unwrap((client) => client.post<UserAddress>(basePath, request));
+        return handleApiResponse((client) => client.post<UserAddress>(basePath, request));
       },
 
       update(id: number, request: SaveUserAddressRequest): Promise<UserAddress> {
-        return unwrap((client) =>
+        return handleApiResponse((client) =>
           client.put<UserAddress>(`${basePath}/${id}`, request),
         );
       },
 
       remove(id: number): Promise<boolean> {
-        return unwrap((client) => client.delete<boolean>(`${basePath}/${id}`));
+        return handleApiResponse((client) => client.delete<boolean>(`${basePath}/${id}`));
       },
     };
   })();
 
 export const userSocialMediaApi =
   createContactInfoApi<UserSocialMedia, SaveUserSocialMediaRequest>(
-    "social-medias",
+    API_CONTROLLERS.MY_SOCIAL_MEDIAS,
   );

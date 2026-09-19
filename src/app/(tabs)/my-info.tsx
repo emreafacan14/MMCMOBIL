@@ -12,9 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { GlassCard, ScreenHeader, Skeleton } from "@/components/ui";
 import { colors } from "@/constants/theme";
 import {
   userAddressHooks,

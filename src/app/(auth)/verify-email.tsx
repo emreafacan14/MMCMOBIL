@@ -4,9 +4,11 @@ import { Pressable, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { CircleAlert } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { OtpInput } from "@/components/ui/OtpInput";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import {
+  OtpInput,
+  PremiumButton,
+  ScreenHeader,
+} from "@/components/ui";
 import { useTranslation } from "@/i18n";
 import {
   useResendEmailOtp,

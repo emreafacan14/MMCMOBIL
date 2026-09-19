@@ -4,11 +4,13 @@ import { Text, View } from "react-native";
 import { router } from "expo-router";
 import { CircleAlert, KeyRound, Mail, Send } from "lucide-react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { TextField } from "@/components/ui/TextField";
-import { AuthHero } from "@/components/ui/AuthHero";
+import {
+  AuthHero,
+  GlassCard,
+  PremiumButton,
+  ScreenHeader,
+  TextField,
+} from "@/components/ui";
 import { useTranslation } from "@/i18n";
 import { useForgotPassword } from "@/hooks/queries/authQueries";
 import { toast } from "@/store/toastStore";

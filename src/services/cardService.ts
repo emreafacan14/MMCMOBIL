@@ -4,22 +4,25 @@ import type {
   MyCardDetail,
   PickedFile,
 } from "@/types/api";
-import { appendFilePart, MULTIPART_CONFIG, unwrap } from "@/services/client";
+import { appendFilePart, handleApiResponse, MULTIPART_CONFIG } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const cardService = {
   getMyCards(): Promise<CardSummary[]> {
-    return unwrap((client) => client.get<CardSummary[]>("/api/my-card"));
+    return handleApiResponse((client) =>
+      client.get<CardSummary[]>(API_ENDPOINTS.MY_CARD.BASE),
+    );
   },
 
   getMyCardDetail(cardId: number): Promise<MyCardDetail> {
-    return unwrap((client) =>
-      client.get<MyCardDetail>(`/api/my-card/${cardId}`),
+    return handleApiResponse((client) =>
+      client.get<MyCardDetail>(API_ENDPOINTS.MY_CARD.BY_ID(cardId)),
     );
   },
 
   activateCard(request: ActivateCardRequest): Promise<CardSummary> {
-    return unwrap((client) =>
-      client.post<CardSummary>("/api/my-card/activate", request),
+    return handleApiResponse((client) =>
+      client.post<CardSummary>(API_ENDPOINTS.MY_CARD.ACTIVATE, request),
     );
   },
 
@@ -29,8 +32,12 @@ export const cardService = {
     formData.append("cardId", String(cardId));
     appendFilePart(formData, "file", file);
 
-    return unwrap((client) =>
-      client.put<boolean>("/api/my-card/profile-image", formData, MULTIPART_CONFIG),
+    return handleApiResponse((client) =>
+      client.put<boolean>(
+        API_ENDPOINTS.MY_CARD.PROFILE_IMAGE,
+        formData,
+        MULTIPART_CONFIG,
+      ),
     );
   },
 };

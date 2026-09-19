@@ -9,7 +9,7 @@ import { Image, Text, View } from "react-native";
 import { resolvePublicUrl } from "@/services/client";
 import { initialsOf } from "@/utils/contact";
 
-interface AvatarProps {
+export interface AvatarProps {
   /** Public image path ("/uploads/...") — API-relative, resolved internally. */
   imagePath?: string | null;
   name: string;

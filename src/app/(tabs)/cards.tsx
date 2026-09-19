@@ -26,13 +26,16 @@ import {
   X,
 } from "lucide-react-native";
 
-import { CardVisual } from "@/components/ui/CardVisual";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { GlassCard } from "@/components/ui/GlassCard";
+import {
+  CardVisual,
+  CardVisualSkeleton,
+  EmptyState,
+  GlassCard,
+  PremiumButton,
+  ScreenHeader,
+  Skeleton,
+} from "@/components/ui";
 import { NfcWriteModal } from "@/components/card/NfcWriteModal";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import {
@@ -296,11 +299,11 @@ export default function MyCardsScreen() {
   const activeCardId = activeCard?.id ?? null;
 
   const detailQuery = useMyCardDetail(activeCardId ?? undefined);
-  const phonesListQuery = cardPhoneHooks.useList(activeCardId ?? undefined);
-  const emailsListQuery = cardEmailHooks.useList(activeCardId ?? undefined);
-  const addressesListQuery = cardAddressHooks.useList(activeCardId ?? undefined);
-  const socialsListQuery = cardSocialMediaHooks.useList(activeCardId ?? undefined);
-  const documentsQuery = cardDocumentHooks.useList(activeCardId ?? undefined);
+  const phonesListQuery = cardPhoneHooks.useList(pickerKind === "phone" ? activeCardId ?? undefined : undefined);
+  const emailsListQuery = cardEmailHooks.useList(pickerKind === "email" ? activeCardId ?? undefined : undefined);
+  const addressesListQuery = cardAddressHooks.useList(pickerKind === "address" ? activeCardId ?? undefined : undefined);
+  const socialsListQuery = cardSocialMediaHooks.useList(pickerKind === "social" ? activeCardId ?? undefined : undefined);
+  const documentsQuery = cardDocumentHooks.useList(pickerKind === "document" ? activeCardId ?? undefined : undefined);
 
   const handleAddCard = () => {
     haptic("light");
@@ -378,11 +381,61 @@ export default function MyCardsScreen() {
       />
 
       {cardsQuery.isLoading ? (
-        <View className="px-5 pt-2 gap-3">
-          <Skeleton className="h-52 rounded-3xl" />
-          <Skeleton className="h-14 rounded-2xl" />
-          <Skeleton className="h-28 rounded-2xl" />
-        </View>
+        <ScrollView
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 8,
+            paddingBottom: 128,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Card Visual Skeleton */}
+          <CardVisualSkeleton />
+
+          {/* Dots placeholder */}
+          <View className="mt-3.5 flex-row items-center justify-center gap-1.5">
+            <Skeleton className="h-2 w-6 rounded-full" />
+            <Skeleton className="h-2 w-2 rounded-full" />
+          </View>
+
+          {/* Quick Action Buttons Row Skeleton */}
+          <View className="mt-4 flex-row gap-2">
+            <Skeleton className="h-12 flex-1 rounded-2xl" />
+            <Skeleton className="h-12 flex-1 rounded-2xl" />
+            <Skeleton className="h-12 flex-1 rounded-2xl" />
+            <Skeleton className="h-12 flex-1 rounded-2xl" />
+          </View>
+
+          {/* Photo Section Skeleton */}
+          <View className="mt-4 flex-row items-center justify-between overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+            <View className="flex-row items-center gap-3">
+              <Skeleton className="h-14 w-14 rounded-full" />
+              <View className="gap-1.5">
+                <Skeleton className="h-4 w-32 rounded-md" />
+                <Skeleton className="h-3 w-40 rounded" />
+              </View>
+            </View>
+            <Skeleton className="h-9 w-24 rounded-xl" />
+          </View>
+
+          {/* Sections Skeleton */}
+          <View className="mt-4 gap-3">
+            <View className="overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+              <View className="mb-3 flex-row items-center justify-between">
+                <Skeleton className="h-4 w-28 rounded-md" />
+                <Skeleton className="h-7 w-16 rounded-xl" />
+              </View>
+              <Skeleton className="h-14 w-full rounded-2xl" />
+            </View>
+            <View className="overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+              <View className="mb-3 flex-row items-center justify-between">
+                <Skeleton className="h-4 w-28 rounded-md" />
+                <Skeleton className="h-7 w-16 rounded-xl" />
+              </View>
+              <Skeleton className="h-14 w-full rounded-2xl" />
+            </View>
+          </View>
+        </ScrollView>
       ) : cards.length === 0 ? (
         <View className="flex-1 px-5 pt-2">
           <GlassCard>
@@ -466,10 +519,43 @@ export default function MyCardsScreen() {
           {/* Active Card Bound Details and Sections */}
           {activeCard && (
             detailQuery.isLoading ? (
-              <View className="mt-4 gap-3">
-                <Skeleton className="h-14 rounded-2xl" />
-                <Skeleton className="h-28 rounded-2xl" />
-                <Skeleton className="h-28 rounded-2xl" />
+              <View className="mt-4 gap-3.5">
+                {/* Quick Action Buttons Row Skeleton */}
+                <View className="flex-row gap-2">
+                  <Skeleton className="h-12 flex-1 rounded-2xl" />
+                  <Skeleton className="h-12 flex-1 rounded-2xl" />
+                  <Skeleton className="h-12 flex-1 rounded-2xl" />
+                  <Skeleton className="h-12 flex-1 rounded-2xl" />
+                </View>
+
+                {/* Photo Section Skeleton */}
+                <View className="flex-row items-center justify-between overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+                  <View className="flex-row items-center gap-3">
+                    <Skeleton className="h-14 w-14 rounded-full" />
+                    <View className="gap-1.5">
+                      <Skeleton className="h-4 w-32 rounded-md" />
+                      <Skeleton className="h-3 w-40 rounded" />
+                    </View>
+                  </View>
+                  <Skeleton className="h-9 w-24 rounded-xl" />
+                </View>
+
+                {/* Bound Sections Skeletons */}
+                <View className="overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+                  <View className="mb-3 flex-row items-center justify-between">
+                    <Skeleton className="h-4 w-28 rounded-md" />
+                    <Skeleton className="h-7 w-16 rounded-xl" />
+                  </View>
+                  <Skeleton className="h-14 w-full rounded-2xl" />
+                </View>
+
+                <View className="overflow-hidden rounded-[26px] border border-line bg-elevated/60 p-4">
+                  <View className="mb-3 flex-row items-center justify-between">
+                    <Skeleton className="h-4 w-28 rounded-md" />
+                    <Skeleton className="h-7 w-16 rounded-xl" />
+                  </View>
+                  <Skeleton className="h-14 w-full rounded-2xl" />
+                </View>
               </View>
             ) : detailQuery.data ? (
               <ActiveCardBoundDetails

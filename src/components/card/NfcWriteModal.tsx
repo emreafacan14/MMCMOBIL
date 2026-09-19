@@ -18,8 +18,7 @@ import {
   Wifi,
   X,
 } from "lucide-react-native";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
+import { GlassCard, PremiumButton } from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useTranslation } from "@/i18n";

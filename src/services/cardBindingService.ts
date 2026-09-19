@@ -14,7 +14,8 @@ import type {
   UpdateCardPhoneRequest,
   UpdateCardSocialMediaRequest,
 } from "@/types/api";
-import { unwrap } from "@/services/client";
+import { handleApiResponse } from "@/services/client";
+import { API_CONTROLLERS } from "@/constants/apiEndpoints";
 
 /**
  * The five `api/my-card/*` sub-resources share one shape:
@@ -28,27 +29,27 @@ function createCardBindingApi<
   TCreate,
   TUpdate,
 >(resource: string, deleteUsesCardId = true) {
-  const basePath = `/api/my-card/${resource}`;
+  const basePath = `${API_CONTROLLERS.MY_CARD}/${resource}`;
 
   return {
     list(cardId: number): Promise<TItem[]> {
-      return unwrap((client) =>
+      return handleApiResponse((client) =>
         client.get<TItem[]>(basePath, { params: { cardId } }),
       );
     },
 
     create(request: TCreate): Promise<TItem> {
-      return unwrap((client) => client.post<TItem>(basePath, request));
+      return handleApiResponse((client) => client.post<TItem>(basePath, request));
     },
 
     update(id: number, request: TUpdate): Promise<TItem> {
-      return unwrap((client) =>
+      return handleApiResponse((client) =>
         client.put<TItem>(`${basePath}/${id}`, request),
       );
     },
 
     remove(id: number, cardId: number): Promise<boolean> {
-      return unwrap((client) =>
+      return handleApiResponse((client) =>
         client.delete<boolean>(
           `${basePath}/${id}`,
           deleteUsesCardId ? { params: { cardId } } : undefined,

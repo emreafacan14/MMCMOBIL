@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { AtSign, FileText, Mail, MapPin, Phone } from "lucide-react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { GlassCard } from "@/components/ui";
 import { useTranslation } from "@/i18n";
 import { queryKeys } from "@/hooks/queries/queryKeys";
 import {

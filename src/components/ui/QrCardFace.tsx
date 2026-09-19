@@ -2,8 +2,8 @@ import { Sparkles } from "lucide-react-native";
 import QRCode from "react-native-qrcode-svg";
 import type { ReactElement } from "react";
 import { Image, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { CardShell } from "@/components/ui/CardShell";
-import { CARD_ASPECT_RATIO } from "@/components/ui/CardVisual";
+import { CardShell } from "./CardShell";
+import { CARD_ASPECT_RATIO } from "./CardVisual";
 import { colors, glowShadow, radius } from "@/constants/theme";
 
 /** Horizontal margin around the hero card on the home screen (px-20 both sides). */

@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Text, View } from "react-native";
 import { colors } from "@/constants/theme";
-import { PremiumButton } from "@/components/ui/PremiumButton";
+import { PremiumButton } from "./PremiumButton";
 
 export interface EmptyStateProps {
   icon: LucideIcon;

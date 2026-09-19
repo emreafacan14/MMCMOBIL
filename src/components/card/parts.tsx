@@ -21,10 +21,12 @@ import {
   Unlink,
   type LucideIcon,
 } from "lucide-react-native";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { ContactRow } from "@/components/ui/ContactRow";
+import {
+  ContactRow,
+  EmptyState,
+  PremiumButton,
+  Skeleton,
+} from "@/components/ui";
 import { useHaptic } from "@/hooks/useHaptic";
 import { ApiError } from "@/services/client";
 

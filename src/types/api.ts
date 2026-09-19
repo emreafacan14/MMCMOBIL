@@ -31,9 +31,9 @@ export const PHONE_NUMBER_TYPE = {
 export type PhoneNumberType =
   (typeof PHONE_NUMBER_TYPE)[keyof typeof PHONE_NUMBER_TYPE];
 
-/** Standard backend envelope. HTTP status is 200 even for business failures;
+/** Standard backend response format. HTTP status is 200 even for business failures;
  *  `success` + `statusCode` carry the real result. */
-export interface ApiEnvelope<T> {
+export interface ApiResponse<T> {
   success: boolean;
   message: string;
   responseData: T | null;

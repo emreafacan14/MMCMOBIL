@@ -5,7 +5,12 @@ export {
   type PremiumButtonSize,
   type PremiumButtonProps,
 } from "./PremiumButton";
-export { Skeleton } from "./Skeleton";
+export {
+  Skeleton,
+  CardVisualSkeleton,
+  ListItemSkeleton,
+  FormFieldsSkeleton,
+} from "./Skeleton";
 export { TextField, type TextFieldProps } from "./TextField";
 export { OtpInput, type OtpInputProps } from "./OtpInput";
 export { ScreenHeader, type ScreenHeaderProps } from "./ScreenHeader";
@@ -19,4 +24,6 @@ export { QrCardFace, type QrCardFaceProps } from "./QrCardFace";
 export { ContactRow, type ContactRowProps } from "./ContactRow";
 export { PremiumBackdrop } from "./PremiumBackdrop";
 export { AuthHero, type AuthHeroProps } from "./AuthHero";
+export { Avatar, type AvatarProps } from "./Avatar";
+export { ConfirmHost } from "./ConfirmHost";
 export { KeyboardActionBar, type KeyboardActionBarProps } from "./KeyboardActionBar";

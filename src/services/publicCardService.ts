@@ -1,12 +1,13 @@
-import { apiClient, unwrap } from "@/services/client";
+import { handleApiResponse, publicApiClient } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 import type { PublicCard } from "@/types/api";
 
 export const publicCardService = {
   getPublicCard(urlKey: string): Promise<PublicCard> {
-    const encodedUrlKey = encodeURIComponent(urlKey);
-
-    return unwrap((client) =>
-      client.get<PublicCard>(`/api/public/cards/${encodedUrlKey}`),
+    return handleApiResponse(
+      (client) =>
+        client.get<PublicCard>(API_ENDPOINTS.PUBLIC_CARDS.BY_URL_KEY(urlKey)),
+      publicApiClient,
     );
   },
 
@@ -18,11 +19,13 @@ export const publicCardService = {
 
   /** Direct VCF endpoint URL (public, no auth header needed). */
   buildVcfUrl(urlKey: string): string {
-    return `${apiClient.defaults.baseURL}/api/public/cards/${encodeURIComponent(urlKey)}/vcf`;
+    const baseUrl = publicApiClient.defaults.baseURL || "";
+    return `${baseUrl}${API_ENDPOINTS.PUBLIC_CARDS.VCF(urlKey)}`;
   },
 
   /** Direct public document endpoint; the response is raw file bytes. */
   buildDocumentUrl(urlKey: string, cardDocumentId: number): string {
-    return `${apiClient.defaults.baseURL}/api/public/cards/${encodeURIComponent(urlKey)}/documents/${cardDocumentId}`;
+    const baseUrl = publicApiClient.defaults.baseURL || "";
+    return `${baseUrl}${API_ENDPOINTS.PUBLIC_CARDS.DOCUMENT(urlKey, cardDocumentId)}`;
   },
 };

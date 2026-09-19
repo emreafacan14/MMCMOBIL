@@ -4,12 +4,13 @@ import axios, {
   type AxiosInstance,
   type InternalAxiosRequestConfig,
 } from "axios";
-import type { ApiEnvelope, PickedFile } from "@/types/api";
+import type { ApiResponse, PickedFile } from "@/types/api";
 import { useAuthStore } from "@/store/authStore";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 /**
  * Business failures arrive with HTTP 200 + success:false, so callers must go
- * through `unwrap` / `unwrapVoid` instead of relying on HTTP status alone.
+ * through `handleApiResponse` instead of relying on HTTP status alone.
  * HTTP 401 only happens when the JWT is missing/expired -> silent refresh.
  */
 export class ApiError extends Error {
@@ -24,7 +25,15 @@ export class ApiError extends Error {
 
 const REQUEST_TIMEOUT_MS = 20000;
 
+/** Authenticated Axios instance (attaches bearer token & handles 401 refresh). */
 export const apiClient: AxiosInstance = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  timeout: REQUEST_TIMEOUT_MS,
+  headers: { "Content-Type": "application/json" },
+});
+
+/** Public Axios instance for unauthenticated endpoints (no token interceptor). */
+export const publicApiClient: AxiosInstance = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: REQUEST_TIMEOUT_MS,
   headers: { "Content-Type": "application/json" },
@@ -54,28 +63,27 @@ async function refreshSession(): Promise<boolean> {
   }
 
   try {
-    const response = await axios.post<ApiEnvelope<{
+    const response = await publicApiClient.post<ApiResponse<{
       accessToken: string;
       refreshToken: string;
     }>>(
-      "/api/auth/refresh-token",
+      API_ENDPOINTS.AUTH.REFRESH_TOKEN,
       { refreshToken },
-      { baseURL: apiClient.defaults.baseURL },
     );
 
-    const envelope = readEnvelope<{
+    const apiResp = readApiResponse<{
       accessToken: string;
       refreshToken: string;
     }>(response.data);
 
-    if (!envelope.success || envelope.responseData === null) {
+    if (!apiResp.success || apiResp.responseData === null) {
       await clearSession();
       return false;
     }
 
     await setTokens({
-      accessToken: envelope.responseData.accessToken,
-      refreshToken: envelope.responseData.refreshToken,
+      accessToken: apiResp.responseData.accessToken,
+      refreshToken: apiResp.responseData.refreshToken,
     });
 
     return true;
@@ -120,7 +128,7 @@ export function toApiError(error: unknown): ApiError {
   if (axios.isAxiosError(error)) {
     const responseData = error.response?.data;
 
-    if (isApiEnvelope(responseData)) {
+    if (isApiResponse(responseData)) {
       return new ApiError(
         responseData.message || "Beklenmeyen bir hata oluştu.",
         responseData.statusCode,
@@ -138,12 +146,12 @@ export function toApiError(error: unknown): ApiError {
   return new ApiError("Beklenmeyen bir hata oluştu.", 0);
 }
 
-function isApiEnvelope(value: unknown): value is ApiEnvelope<unknown> {
+function isApiResponse(value: unknown): value is ApiResponse<unknown> {
   if (typeof value !== "object" || value === null) {
     return false;
   }
 
-  const candidate = value as Partial<ApiEnvelope<unknown>>;
+  const candidate = value as Partial<ApiResponse<unknown>>;
 
   return (
     typeof candidate.success === "boolean" &&
@@ -153,77 +161,32 @@ function isApiEnvelope(value: unknown): value is ApiEnvelope<unknown> {
   );
 }
 
-function readEnvelope<T>(value: unknown): ApiEnvelope<T> {
-  if (!isApiEnvelope(value)) {
+function readApiResponse<T>(value: unknown): ApiResponse<T> {
+  if (!isApiResponse(value)) {
     throw new ApiError("Sunucudan geçersiz yanıt alındı.", 0);
   }
 
-  return value as ApiEnvelope<T>;
+  return value as ApiResponse<T>;
 }
 
 /** Runs a request and returns `responseData`, throwing `ApiError` on failure.
- *  Services declare the payload's ELEMENT type for ergonomic public signatures;
- *  the wire format is always the backend envelope, so the raw body is narrowed
- *  here (justified cast — guarded by the success/responseData checks below). */
-export async function unwrap<T>(
+ *  Defaults to authenticated `apiClient`, or uses the supplied `client`. */
+export async function handleApiResponse<T = void>(
   request: (client: AxiosInstance) => Promise<{ data: unknown }>,
+  client: AxiosInstance = apiClient,
 ): Promise<T> {
   try {
-    const response = await request(apiClient);
-    // Backend always answers ResponseDto<T>; see types/api.ts ApiEnvelope docs.
-    const envelope = readEnvelope<T>(response.data);
+    const response = await request(client);
+    const apiResp = readApiResponse<T>(response.data);
 
-    if (!envelope.success || envelope.responseData === null) {
+    if (!apiResp.success) {
       throw new ApiError(
-        envelope.message || "İşlem tamamlanamadı.",
-        envelope.statusCode,
+        apiResp.message || "İşlem tamamlanamadı.",
+        apiResp.statusCode,
       );
     }
 
-    return envelope.responseData;
-  } catch (error) {
-    throw toApiError(error);
-  }
-}
-
-/**
- * Unwraps successful endpoints that intentionally return a null payload.
- * This is used by anti-enumeration OTP endpoints: `success: true` is still a
- * successful request even when the backend withholds the verification key.
- */
-export async function unwrapNullable<T>(
-  request: (client: AxiosInstance) => Promise<{ data: unknown }>,
-): Promise<T | null> {
-  try {
-    const response = await request(apiClient);
-    const envelope = readEnvelope<T>(response.data);
-
-    if (!envelope.success) {
-      throw new ApiError(
-        envelope.message || "İşlem tamamlanamadı.",
-        envelope.statusCode,
-      );
-    }
-
-    return envelope.responseData;
-  } catch (error) {
-    throw toApiError(error);
-  }
-}
-
-/** Same as `unwrap` for endpoints whose payload the app ignores. */
-export async function unwrapVoid(
-  request: (client: AxiosInstance) => Promise<{ data: unknown }>,
-): Promise<void> {
-  try {
-    const envelope = readEnvelope<unknown>((await request(apiClient)).data);
-
-    if (!envelope.success) {
-      throw new ApiError(
-        envelope.message || "İşlem tamamlanamadı.",
-        envelope.statusCode,
-      );
-    }
+    return apiResp.responseData as T;
   } catch (error) {
     throw toApiError(error);
   }
@@ -281,5 +244,6 @@ export function resolvePublicUrl(path: string | null | undefined): string | null
     return path;
   }
 
-  return `${apiClient.defaults.baseURL}${path.startsWith("/") ? "" : "/"}${path}`;
+  const baseUrl = apiClient.defaults.baseURL || publicApiClient.defaults.baseURL || "";
+  return `${baseUrl}${path.startsWith("/") ? "" : "/"}${path}`;
 }

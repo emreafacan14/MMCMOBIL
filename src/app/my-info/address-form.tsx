@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { TextField } from "@/components/ui/TextField";
+import { FormFieldsSkeleton, TextField } from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { userAddressHooks } from "@/hooks/queries/contactInfoQueries";
 import { useDistricts, useCities, useNeighborhoods } from "@/hooks/queries/referenceQueries";
@@ -253,6 +253,19 @@ export default function AddressFormScreen() {
       toast.error(toApiError(error).message);
     }
   };
+
+  if (editingId !== null && listQuery.isLoading) {
+    return (
+      <ContactFormShell
+        title={t("myInfo.addresses.formEditTitle")}
+        saveLabel={t("common.save")}
+        isSaving={false}
+        onSubmit={() => {}}
+      >
+        <FormFieldsSkeleton count={6} />
+      </ContactFormShell>
+    );
+  }
 
   if (editingId !== null && !listQuery.isSuccess) {
     return null; // Wait for the cached list before deciding prefill vs. back.

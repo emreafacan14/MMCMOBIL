@@ -1,10 +1,13 @@
 import type { SocialMediaPlatform } from "@/types/api";
-import { unwrap } from "@/services/client";
+import { handleApiResponse } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const platformService = {
   getAll(): Promise<SocialMediaPlatform[]> {
-    return unwrap((client) =>
-      client.get<SocialMediaPlatform[]>("/api/social-media-platforms"),
+    return handleApiResponse((client) =>
+      client.get<SocialMediaPlatform[]>(
+        API_ENDPOINTS.SOCIAL_MEDIA_PLATFORMS.BASE,
+      ),
     );
   },
 };

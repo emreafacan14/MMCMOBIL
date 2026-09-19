@@ -3,8 +3,7 @@ import { Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
+import { GlassCard, ScreenHeader } from "@/components/ui";
 import { colors, appVersion } from "@/constants/theme";
 import { useTranslation } from "@/i18n";
 

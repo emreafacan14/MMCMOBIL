@@ -5,11 +5,13 @@ import { useRouter } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { GlassCard } from "@/components/ui/GlassCard";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { TextField } from "@/components/ui/TextField";
-import { KeyboardActionBar } from "@/components/ui/KeyboardActionBar";
+import {
+  GlassCard,
+  KeyboardActionBar,
+  PremiumButton,
+  ScreenHeader,
+  TextField,
+} from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import { useSendContactMessage } from "@/hooks/queries/supportQueries";

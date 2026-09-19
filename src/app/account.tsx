@@ -8,8 +8,7 @@ import { Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Camera } from "lucide-react-native";
 
-import { Avatar } from "@/components/ui/Avatar";
-import { TextField } from "@/components/ui/TextField";
+import { Avatar, FormFieldsSkeleton, Skeleton, TextField } from "@/components/ui";
 import { colors } from "@/constants/theme";
 import {
   useMyProfile,
@@ -108,54 +107,66 @@ export default function AccountScreen() {
       isSaving={updateProfileMutation.isPending}
       onSubmit={() => void handleSubmit()}
     >
-      <View className="items-center gap-y-3 py-2">
-        <Pressable
-          onPress={() => void handleChangePhoto()}
-          disabled={updatePhotoMutation.isPending}
-          accessibilityRole="button"
-          accessibilityLabel={
-            profile?.profileImagePath
-              ? t("account.changePhoto")
-              : t("account.addPhoto")
-          }
-          className={`active:opacity-70 ${updatePhotoMutation.isPending ? "opacity-50" : ""}`}
-        >
-          <Avatar
-            imagePath={profile?.profileImagePath ?? null}
-            name={name}
-            surname={surname}
-            size={96}
-          />
-          <View className="absolute -bottom-1 -right-1 h-8 w-8 items-center justify-center rounded-full border border-line bg-elevated">
-            <Camera size={15} color={colors.primaryStrong} />
+      {profileQuery.isLoading ? (
+        <View className="gap-6 py-2">
+          <View className="items-center gap-y-3">
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <Skeleton className="h-4 w-28 rounded" />
           </View>
-        </Pressable>
-        <Text className="text-sm text-muted">
-          {profile?.profileImagePath ? t("account.changePhoto") : t("account.addPhoto")}
-        </Text>
-      </View>
+          <FormFieldsSkeleton count={3} />
+        </View>
+      ) : (
+        <>
+          <View className="items-center gap-y-3 py-2">
+            <Pressable
+              onPress={() => void handleChangePhoto()}
+              disabled={updatePhotoMutation.isPending}
+              accessibilityRole="button"
+              accessibilityLabel={
+                profile?.profileImagePath
+                  ? t("account.changePhoto")
+                  : t("account.addPhoto")
+              }
+              className={`active:opacity-70 ${updatePhotoMutation.isPending ? "opacity-50" : ""}`}
+            >
+              <Avatar
+                imagePath={profile?.profileImagePath ?? null}
+                name={name}
+                surname={surname}
+                size={96}
+              />
+              <View className="absolute -bottom-1 -right-1 h-8 w-8 items-center justify-center rounded-full border border-line bg-elevated">
+                <Camera size={15} color={colors.primaryStrong} />
+              </View>
+            </Pressable>
+            <Text className="text-sm text-muted">
+              {profile?.profileImagePath ? t("account.changePhoto") : t("account.addPhoto")}
+            </Text>
+          </View>
 
-      <TextField
-        label={t("account.nameLabel")}
-        value={name}
-        onChangeText={setName}
-        placeholder={t("account.nameLabel")}
-        autoCapitalize="words"
-      />
-      <TextField
-        label={t("account.surnameLabel")}
-        value={surname}
-        onChangeText={setSurname}
-        placeholder={t("account.surnameLabel")}
-        autoCapitalize="words"
-      />
+          <TextField
+            label={t("account.nameLabel")}
+            value={name}
+            onChangeText={setName}
+            placeholder={t("account.nameLabel")}
+            autoCapitalize="words"
+          />
+          <TextField
+            label={t("account.surnameLabel")}
+            value={surname}
+            onChangeText={setSurname}
+            placeholder={t("account.surnameLabel")}
+            autoCapitalize="words"
+          />
 
-      <TextField
-        label={t("account.emailLabel")}
-        value={profile?.email ?? ""}
-        onChangeText={() => {}}
-        editable={false}
-      />
+          <TextField
+            label={t("account.emailLabel")}
+            value={profile?.email ?? ""}
+            onChangeText={() => {}}
+            editable={false}
+          />
+        </>
+      )}
     </ContactFormShell>
   );
 }

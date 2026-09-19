@@ -12,10 +12,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { TranslationKey } from "@/i18n";
-import { PremiumButton } from "@/components/ui/PremiumButton";
-import { ScreenHeader } from "@/components/ui/ScreenHeader";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { KeyboardActionBar } from "@/components/ui/KeyboardActionBar";
+import {
+  KeyboardActionBar,
+  PremiumButton,
+  ScreenHeader,
+  Skeleton,
+} from "@/components/ui";
 import { colors } from "@/constants/theme";
 import { useHaptic } from "@/hooks/useHaptic";
 import {

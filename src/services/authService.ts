@@ -12,70 +12,83 @@ import type {
   ResetPasswordRequest,
   VerifyOtpRequest,
 } from "@/types/api";
-import { unwrap, unwrapNullable, unwrapVoid } from "@/services/client";
+import { handleApiResponse, publicApiClient } from "@/services/client";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const authService = {
   login(request: LoginRequest): Promise<LoginResponse> {
-    return unwrap((client) =>
-      client.post<LoginResponse>("/api/auth/login", request),
+    return handleApiResponse(
+      (client) => client.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, request),
+      publicApiClient,
     );
   },
 
   register(request: RegisterRequest): Promise<RegisterResponse> {
-    return unwrap((client) =>
-      client.post<RegisterResponse>("/api/auth/register", request),
+    return handleApiResponse(
+      (client) => client.post<RegisterResponse>(API_ENDPOINTS.AUTH.REGISTER, request),
+      publicApiClient,
     );
   },
 
   verifyEmail(request: VerifyOtpRequest): Promise<void> {
-    return unwrapVoid((client) =>
-      client.post("/api/auth/verify-email", request),
+    return handleApiResponse(
+      (client) => client.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, request),
+      publicApiClient,
     );
   },
 
   resendEmailVerificationOtp(
     request: ResendOtpRequest,
   ): Promise<OtpCreationResponse | null> {
-    return unwrapNullable((client) =>
-      client.post<OtpCreationResponse>(
-        "/api/auth/resend-email-verification-otp",
-        request,
-      ),
+    return handleApiResponse(
+      (client) =>
+        client.post<OtpCreationResponse>(
+          API_ENDPOINTS.AUTH.RESEND_EMAIL_VERIFICATION_OTP,
+          request,
+        ),
+      publicApiClient,
     );
   },
 
   forgotPassword(request: ForgotPasswordRequest): Promise<OtpCreationResponse | null> {
-    return unwrapNullable((client) =>
-      client.post<OtpCreationResponse>("/api/auth/forgot-password", request),
+    return handleApiResponse(
+      (client) =>
+        client.post<OtpCreationResponse>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, request),
+      publicApiClient,
     );
   },
 
   resendForgotPasswordOtp(
     request: ForgotPasswordRequest,
   ): Promise<OtpCreationResponse | null> {
-    return unwrapNullable((client) =>
-      client.post<OtpCreationResponse>(
-        "/api/auth/resend-forgot-password-otp",
-        request,
-      ),
+    return handleApiResponse(
+      (client) =>
+        client.post<OtpCreationResponse>(
+          API_ENDPOINTS.AUTH.RESEND_FORGOT_PASSWORD_OTP,
+          request,
+        ),
+      publicApiClient,
     );
   },
 
   resetPassword(request: ResetPasswordRequest): Promise<void> {
-    return unwrapVoid((client) =>
-      client.post("/api/auth/reset-password", request),
+    return handleApiResponse(
+      (client) => client.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, request),
+      publicApiClient,
     );
   },
 
   refreshToken(request: RefreshTokenRequest): Promise<RefreshTokenResponse> {
-    return unwrap((client) =>
-      client.post<RefreshTokenResponse>("/api/auth/refresh-token", request),
+    return handleApiResponse(
+      (client) =>
+        client.post<RefreshTokenResponse>(API_ENDPOINTS.AUTH.REFRESH_TOKEN, request),
+      publicApiClient,
     );
   },
 
   logout(request: RefreshTokenRequest): Promise<LogoutResponse> {
-    return unwrap((client) =>
-      client.post<LogoutResponse>("/api/auth/logout", request),
+    return handleApiResponse((client) =>
+      client.post<LogoutResponse>(API_ENDPOINTS.AUTH.LOGOUT, request),
     );
   },
 };

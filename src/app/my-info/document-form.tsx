@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { TextField } from "@/components/ui/TextField";
+import { FormFieldsSkeleton, TextField } from "@/components/ui";
 import { colors } from "@/constants/theme";
 import {
   useMyDocuments,
@@ -171,6 +171,19 @@ export default function DocumentFormScreen() {
       toast.error(toApiError(error).message);
     }
   };
+
+  if (editingId !== null && listQuery.isLoading) {
+    return (
+      <ContactFormShell
+        title={t("myInfo.documents.formEditTitle")}
+        saveLabel={t("common.save")}
+        isSaving={false}
+        onSubmit={() => {}}
+      >
+        <FormFieldsSkeleton count={3} />
+      </ContactFormShell>
+    );
+  }
 
   if (editingId !== null && !listQuery.isSuccess) {
     return null; // Wait for the cached list before deciding prefill vs. back.
